@@ -125,12 +125,14 @@
             </div>
             
             <button id="btn-show-leaderboard" class="btn-3d btn-small hidden">Xem Bảng Xếp Hạng</button>
+            <button id="btn-end-game" class="btn-3d btn-small btn-danger hidden" style="position:absolute; bottom:80px; left:50%; transform:translateX(-50%); z-index:50;">Kết thúc Game</button>
         </div>
 
         <!-- 6. MÀN HÌNH BẢNG XẾP HẠNG (LEADERBOARD) -->
         <div id="screen-leaderboard" class="screen hidden">
             <div class="leaderboard-board">
                 <h2 class="board-title">BẢNG XẾP HẠNG</h2>
+                <h3 id="board-congrats" class="hidden" style="color: #ffeb3b; font-size: 1.5rem; text-shadow: 1px 1px 2px #000; margin-bottom: 10px;"></h3>
                 <div class="board-content">
                     <ul id="leaderboard-list">
                         <!-- Danh sách xếp hạng -->

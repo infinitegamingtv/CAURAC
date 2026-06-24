@@ -196,7 +196,32 @@ function startGameForTeacher() {
     switchScreen('game');
     document.getElementById('screen-game').classList.add('teacher-mode');
     document.getElementById('btn-show-leaderboard').classList.remove('hidden');
+    document.getElementById('btn-end-game').classList.remove('hidden');
+    
+    // Theo dõi trạng thái hoàn thành của học sinh
+    onValue(ref(db, `rooms/${currentRoomCode}/players`), (snap) => {
+        const players = snap.val();
+        if (!players) return;
+        const playerList = Object.values(players);
+        const totalPlayers = playerList.length;
+        if (totalPlayers === 0) return;
+        
+        const finishedCount = playerList.filter(p => p.finished).length;
+        if (finishedCount === totalPlayers && totalPlayers > 0) {
+            showToast("Tất cả học sinh đã hoàn thành!");
+            setTimeout(() => {
+                document.getElementById('btn-show-leaderboard').click();
+            }, 1500);
+        }
+    });
 }
+
+document.getElementById('btn-end-game').addEventListener('click', () => {
+    if (confirm("Kết thúc game và đóng phòng?")) {
+        if (currentRoomCode) remove(ref(db, 'rooms/' + currentRoomCode));
+        switchScreen('home');
+    }
+});
 
 // ==========================================
 // LOGIC HỌC SINH (THAM GIA PHÒNG)
@@ -237,6 +262,11 @@ document.getElementById('btn-join-submit').addEventListener('click', async () =>
         switchScreen('lobby');
         
         onValue(ref(db, `rooms/${currentRoomCode}/status`), (snap) => {
+            if (!snap.exists() || snap.val() === null) {
+                showToast("Giáo viên đã đóng phòng!");
+                setTimeout(() => window.location.reload(), 2000);
+                return;
+            }
             if (snap.val() === 'playing') {
                 startGameForStudent();
             }
@@ -264,6 +294,13 @@ function loadQuestion() {
     if (currentQuestionIndex >= questions.length) {
         document.getElementById('question-text').textContent = "🎉 Chúc mừng bạn đã hoàn thành nhiệm vụ! 🎉";
         document.querySelector('.answers-grid').innerHTML = "";
+        
+        if (db && currentRoomCode && myPlayerId) {
+            update(ref(db, `rooms/${currentRoomCode}/players/${myPlayerId}`), {
+                finished: true
+            });
+        }
+        
         playSFX(sfxWin);
         setTimeout(() => {
             document.getElementById('btn-show-leaderboard').classList.remove('hidden');
@@ -375,14 +412,22 @@ document.getElementById('btn-show-leaderboard').addEventListener('click', () => 
         playersList.sort((a, b) => b.score - a.score);
         
         const listEl = document.getElementById('leaderboard-list');
+        const congratsEl = document.getElementById('board-congrats');
         listEl.innerHTML = '';
+        
+        if (playersList.length > 0 && playersList[0].finished) {
+            congratsEl.textContent = "🏆 Chúc mừng " + playersList[0].name + " đạt Hạng 1! 🏆";
+            congratsEl.classList.remove('hidden');
+        } else {
+            congratsEl.classList.add('hidden');
+        }
         
         playersList.forEach((p, index) => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <div style="display:flex; align-items:center;">
                     <div class="rank">${index + 1}</div>
-                    <span>${p.name}</span>
+                    <span>${p.name} ${p.finished ? '✅' : ''}</span>
                 </div>
                 <div>${p.score} ⭐</div>
             `;

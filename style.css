@@ -626,3 +626,62 @@ body {
     left: 50%;
     transform: translateX(-50%);
 }
+
+/* ==========================================
+   RESPONSIVE (MOBILE & TABLET)
+   ========================================== */
+@media screen and (max-width: 768px) {
+    .game-title { font-size: 2rem; }
+    .game-title span { font-size: 2.5rem; }
+    .panel { min-width: 90%; padding: 1.5rem; width: 90%; }
+    .character-preview img { height: 180px; }
+    .btn-3d { font-size: 1.2rem; padding: 12px 20px; }
+    .neon-text { font-size: 2.5rem; }
+    
+    /* Màn hình Game */
+    .question-panel {
+        padding: 1rem 1rem;
+        height: 50%;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+    #question-text { font-size: 1.2rem; margin-bottom: 0.8rem; }
+    
+    /* Lưới đáp án: Chuyển thành 1 cột trên màn hình dọc (Điện thoại) */
+    .answers-grid {
+        grid-template-columns: 1fr; 
+        gap: 8px;
+    }
+    .btn-answer { font-size: 1rem; padding: 8px 15px; }
+    
+    /* Bảng xếp hạng */
+    .leaderboard-board {
+        width: 95%;
+        height: 90vh;
+        padding: 80px 20px 20px;
+    }
+    .board-title { font-size: 1.8rem; }
+    #leaderboard-list li { font-size: 1.1rem; padding: 10px; }
+    
+    /* Gameplay & Nhân vật */
+    .game-scene { height: 50%; }
+    .character-container { height: 120px; top: 30%; left: 5%; }
+    .reaction { font-size: 1.5rem; top: -30px; }
+    .grabber-container { width: 4px; }
+    .grabbed-item img { max-width: 50px; max-height: 50px; }
+    
+    /* Header & Buttons */
+    .game-header { font-size: 1rem; padding: 10px; }
+    .score-value { font-size: 1.2rem; }
+    
+    #btn-show-leaderboard {
+        top: 55px;
+        right: 10px;
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+    .teacher-mode #btn-show-leaderboard {
+        bottom: 20px;
+        top: auto;
+    }
+}
