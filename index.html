@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh niên tình nguyện làm sạch đại dương</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Notification Toast -->
+        <div id="toast" class="toast hidden"></div>
+        
+        <!-- Background Animation -->
+        <div class="ocean-bg">
+            <div class="bubble bubble-1"></div>
+            <div class="bubble bubble-2"></div>
+            <div class="bubble bubble-3"></div>
+            <div class="bubble bubble-4"></div>
+            <div class="bubble bubble-5"></div>
+        </div>
+
+        <!-- 1. MÀN HÌNH CHÍNH (HOME) -->
+        <div id="screen-home" class="screen active">
+            <h1 class="game-title">Thanh Niên Tình Nguyện<br><span>Làm Sạch Đại Dương</span></h1>
+            <div class="character-preview">
+                <img src="assets/nhanvat.png" alt="Nhân vật chính" class="floating">
+            </div>
+            <div class="button-group vertical">
+                <button id="btn-home-teacher" class="btn-3d btn-primary">Giáo viên (Tạo phòng)</button>
+                <button id="btn-home-student" class="btn-3d btn-secondary">Học sinh (Tham gia)</button>
+            </div>
+        </div>
+
+        <!-- 2. MÀN HÌNH GIÁO VIÊN TẠO PHÒNG (CREATE ROOM) -->
+        <div id="screen-create-room" class="screen hidden">
+            <h2 class="screen-title">Phòng Của Giáo Viên</h2>
+            <div class="panel">
+                <p>Mã phòng của bạn:</p>
+                <div id="display-room-code" class="neon-text room-code">------</div>
+                <div class="waiting-list-container">
+                    <h3>Học sinh đang chờ: <span id="student-count">0</span></h3>
+                    <ul id="teacher-waiting-list" class="waiting-list">
+                        <!-- Danh sách học sinh -->
+                    </ul>
+                </div>
+                <div class="button-group">
+                    <button id="btn-start-game" class="btn-3d btn-success" disabled>Bắt đầu Game</button>
+                    <button id="btn-cancel-room" class="btn-3d btn-danger">Hủy Phòng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. MÀN HÌNH HỌC SINH THAM GIA (JOIN ROOM) -->
+        <div id="screen-join-room" class="screen hidden">
+            <h2 class="screen-title">Tham Gia Làm Sạch</h2>
+            <div class="panel">
+                <div class="input-group">
+                    <label for="input-room-code">Mã Phòng:</label>
+                    <input type="text" id="input-room-code" placeholder="Nhập 6 chữ số..." maxlength="6" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="input-player-name">Tên của bạn:</label>
+                    <input type="text" id="input-player-name" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="off" maxlength="20">
+                </div>
+                <div class="button-group">
+                    <button id="btn-join-submit" class="btn-3d btn-primary">Vào Phòng</button>
+                    <button id="btn-back-home" class="btn-3d btn-secondary">Quay lại</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. MÀN HÌNH SẢNH CHỜ HỌC SINH (LOBBY) -->
+        <div id="screen-lobby" class="screen hidden">
+            <h2 class="screen-title">Sảnh Chờ</h2>
+            <div class="panel center-content">
+                <div class="loader"></div>
+                <p class="lobby-message">Đang chờ giáo viên bắt đầu game...</p>
+                <p>Mã phòng: <strong id="lobby-room-code-display" class="highlight"></strong></p>
+                <p>Tên của bạn: <strong id="lobby-name-display" class="highlight"></strong></p>
+            </div>
+        </div>
+
+        <!-- 5. MÀN HÌNH CHƠI GAME (GAMEPLAY) -->
+        <div id="screen-game" class="screen hidden">
+            <div class="game-header">
+                <div class="player-info">
+                    <span class="avatar-icon">👤</span> <span id="game-player-name">Player</span>
+                </div>
+                <div class="score-info">
+                    ⭐ Điểm: <span id="game-score" class="score-value">0</span>
+                </div>
+            </div>
+            
+            <div class="game-scene">
+                <!-- Vị trí nhân vật -->
+                <div class="character-container">
+                    <img src="assets/nhanvat.png" alt="Nhân vật" id="game-character-img">
+                    <div id="character-reaction" class="reaction hidden"></div>
+                </div>
+                
+                <!-- Ngàm gắp / Lưới -->
+                <div class="grabber-container">
+                    <div id="grabber" class="grabber">
+                        <div class="claw left"></div>
+                        <div class="claw right"></div>
+                        <!-- Vật phẩm gắp được -->
+                        <div id="grabbed-item" class="grabbed-item hidden">
+                            <img src="" id="grabbed-item-img" alt="Item">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Câu hỏi trắc nghiệm -->
+            <div class="question-panel">
+                <h3 id="question-text">Câu hỏi sẽ hiển thị ở đây?</h3>
+                <div class="answers-grid">
+                    <button class="btn-answer" data-index="0">A. Đáp án A</button>
+                    <button class="btn-answer" data-index="1">B. Đáp án B</button>
+                    <button class="btn-answer" data-index="2">C. Đáp án C</button>
+                    <button class="btn-answer" data-index="3">D. Đáp án D</button>
+                </div>
+            </div>
+            
+            <button id="btn-show-leaderboard" class="btn-3d btn-small hidden">Xem Bảng Xếp Hạng</button>
+        </div>
+
+        <!-- 6. MÀN HÌNH BẢNG XẾP HẠNG (LEADERBOARD) -->
+        <div id="screen-leaderboard" class="screen hidden">
+            <div class="leaderboard-board">
+                <h2 class="board-title">BẢNG XẾP HẠNG</h2>
+                <div class="board-content">
+                    <ul id="leaderboard-list">
+                        <!-- Danh sách xếp hạng -->
+                    </ul>
+                </div>
+                <button id="btn-close-leaderboard" class="btn-3d btn-close btn-danger">Thoát / Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Logic -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
